@@ -1,0 +1,16 @@
+CREATE DATABASE IF NOT EXISTS shelfscape CHARACTER SET utf8mb4;
+USE shelfscape;
+CREATE TABLE users(id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(40) UNIQUE NOT NULL, password_hash VARCHAR(255) NOT NULL);
+CREATE TABLE shelves(id INT AUTO_INCREMENT PRIMARY KEY, user_id INT NOT NULL, name VARCHAR(60) NOT NULL,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE);
+CREATE TABLE books(id INT AUTO_INCREMENT PRIMARY KEY, user_id INT NOT NULL, shelf_id INT NOT NULL,
+  title VARCHAR(200) NOT NULL, author VARCHAR(150) DEFAULT '', genre VARCHAR(40) DEFAULT 'Fiction',
+  description TEXT, cover_url VARCHAR(500) DEFAULT NULL,
+  source ENUM('epub','link','manual') DEFAULT 'manual', file_path VARCHAR(100) DEFAULT NULL, link_url VARCHAR(500) DEFAULT NULL,
+  status ENUM('want','reading','finished') DEFAULT 'want', progress TINYINT DEFAULT 0, cfi VARCHAR(500) DEFAULT NULL,
+  position INT DEFAULT 0,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY(shelf_id) REFERENCES shelves(id) ON DELETE CASCADE);
+CREATE TABLE prefs(user_id INT PRIMARY KEY, shelf_theme VARCHAR(20) DEFAULT 'wood', background VARCHAR(20) DEFAULT 'window',
+  accent VARCHAR(7) DEFAULT '#ff5fa2', tilt TINYINT DEFAULT 1,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE);
